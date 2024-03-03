@@ -80,7 +80,7 @@ namespace SpiderMod
         });
     }
 
-    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.3")]
+    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.4")]
     internal class Plugin : BaseUnityPlugin
     {
         public static new ManualLogSource Logger;

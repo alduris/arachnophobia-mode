@@ -21,12 +21,12 @@
     
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">
     <ItemGroup>
-      <RemovePlugins Include="./output/plugins/*.dll" />
-      <RemovePlugins Include="./output/plugins/*.pdb" />
+      <RemovePlugins Include="./output/newest/plugins/*.dll" />
+      <RemovePlugins Include="./output/newest/plugins/*.pdb" />
     </ItemGroup>
         
     <Delete Files="@(RemovePlugins)" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="./output/plugins/" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="./output/newest/plugins/" />
   </Target>
 
 </Project>

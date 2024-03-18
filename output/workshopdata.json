@@ -1,0 +1,18 @@
+{
+  "Title": "Arachnophobia Mode",
+  "Description": "A silly little way to help deal with arachnophobia. Inspired by Lethal Company. Supports spiders, rot cysts, and noodleflies (including mod creatures based on them).\r\n\r\nOpen source: https://github.com/alduris/arachnophobia-mode",
+  "ID": "alduris.arachnophobia",
+  "Version": "1.0.3",
+  "TargetGameVersion": "v1.9.06",
+  "Requirements": "",
+  "RequirementNames": "",
+  "Authors": "Alduris",
+  "Visibility": "Public",
+  "Tags": [
+    "Creatures",
+    "Accessibility"
+  ],
+  "WorkshopID": 3123041940,
+  "UploadFilesOnly": true,
+  "UploadThumbnail": false
+}

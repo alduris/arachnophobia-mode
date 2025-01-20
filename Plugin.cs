@@ -77,6 +77,39 @@ namespace SpiderMod
 
                 return [.. (type.value.Substring(0, cut) + "Noot").ToCharArray().Select(c => new FLabel(font, c.ToString()))];
             }
+            else if (Options.Eggbugs.Value && self.drawableObject is EggBugGraphics eggBugGraf)
+            {
+                string str;
+                var type = eggBugGraf.bug.abstractCreature.creatureTemplate.type;
+                if (type == CreatureTemplate.Type.EggBug) str = "Eggbug";
+                else if (ModManager.MSC && type == MoreSlugcatsEnums.CreatureTemplateType.FireBug) str = "Firebug";
+                else str = pascalRegex.Replace(type.value, Environment.NewLine);
+
+                List<FLabel> labels = [new(font, str) {
+                    scale = (eggBugGraf.bug.bodyChunks[0].rad + eggBugGraf.bug.bodyChunks[1].rad + eggBugGraf.bug.bodyChunkConnections[0].distance) * 1.75f / LabelTest.GetWidth(str),
+                    color = eggBugGraf.blackColor
+                }];
+
+                // Eggs
+                for (int i = 0; i < 6; i++)
+                {
+                    labels.Add(new(font, "Egg")
+                    {
+                        scale = eggBugGraf.eggs[i / 3, i % 2].rad * 3f / LabelTest.GetWidth("Egg"),
+                        color = eggBugGraf.eggColors[1]
+                    });
+                }
+
+                return [.. labels];
+            }
+            else if (Options.Eggbugs.Value && self.drawableObject is EggBugEgg egg)
+            {
+                return [new FLabel(font, "Egg") { scale = egg.firstChunk.rad * 3f / LabelTest.GetWidth("Egg"), color = egg.eggColors[1] }];
+            }
+            else if (Options.Eggbugs.Value && self.drawableObject is FireEgg fireEgg)
+            {
+                return [new FLabel(font, "Egg") { scale = fireEgg.firstChunk.rad * 3f / LabelTest.GetWidth("Egg"), color = fireEgg.eggColors[1] }];
+            }
             return null;
         });
     }
@@ -199,33 +232,33 @@ namespace SpiderMod
                 }
             }
         }
-        private static void SpriteLeaser_Update(On.RoomCamera.SpriteLeaser.orig_Update orig, SpriteLeaser self, float timeStacker, RoomCamera rCam, Vector2 camPos)
+        private static void SpriteLeaser_Update(On.RoomCamera.SpriteLeaser.orig_Update orig, SpriteLeaser sLeaser, float timeStacker, RoomCamera rCam, Vector2 camPos)
         {
-            orig(self, timeStacker, rCam, camPos);
-            var labels = CWTs.GetLabel(self);
+            orig(sLeaser, timeStacker, rCam, camPos);
+            var labels = CWTs.GetLabel(sLeaser);
 
             if (labels != null)
             {
-                foreach (var sprite in self.sprites)
+                foreach (var sprite in sLeaser.sprites)
                 {
                     sprite.isVisible = false;
                 }
             }
 
-            if (Options.Spiders.Value && self.drawableObject is SpiderGraphics spiderGraf)
+            if (Options.Spiders.Value && sLeaser.drawableObject is SpiderGraphics spiderGraf)
             {
                 // Coalescipede
-                var pos = self.sprites[spiderGraf.BodySprite].GetPosition();
-                var rot = self.sprites[spiderGraf.BodySprite].rotation;
+                var pos = sLeaser.sprites[spiderGraf.BodySprite].GetPosition();
+                var rot = sLeaser.sprites[spiderGraf.BodySprite].rotation;
 
                 labels[0].SetPosition(pos);
                 labels[0].rotation = rot;
             }
-            else if (Options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
+            else if (Options.Spiders.Value && sLeaser.drawableObject is BigSpiderGraphics bigSpidGraf)
             {
                 // Big spider
                 var pos = bigSpidGraf.bug.bodyChunks[1].pos - camPos;
-                var rot = self.sprites[bigSpidGraf.HeadSprite].rotation;
+                var rot = sLeaser.sprites[bigSpidGraf.HeadSprite].rotation;
 
                 // Force rotation to be between 0 and 180 degrees
                 if (rot < 0) rot += 180f * ((int)rot / 180 + 1);
@@ -235,7 +268,7 @@ namespace SpiderMod
                 labels[0].SetPosition(pos);
                 labels[0].rotation = rot;
             }
-            else if (Options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
+            else if (Options.RotCysts.Value && sLeaser.drawableObject is DaddyGraphics daddyGraf)
             {
                 // Main body chunk
                 labels[0].SetPosition(daddyGraf.daddy.MiddleOfBody - camPos);
@@ -260,7 +293,7 @@ namespace SpiderMod
                     }
                 }
             }
-            else if (Options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
+            else if (Options.Noots.Value && sLeaser.drawableObject is NeedleWormGraphics nootGraf)
             {
                 for (int i = 0; i < labels.Length; i++)
                 {
@@ -270,6 +303,34 @@ namespace SpiderMod
                     // Color = body color if not angry, white if fang out as warning
                     labels[i].color = Color.Lerp(nootGraf.bodyColor, Color.white, Mathf.Lerp(nootGraf.lastFangOut, nootGraf.fangOut, timeStacker));
                 }
+            }
+            else if (Options.Eggbugs.Value && sLeaser.drawableObject is EggBugGraphics eggBugGraf)
+            {
+                // Body
+                labels[0].SetPosition(Vector2.Lerp(eggBugGraf.bug.bodyChunks[1].lastPos, eggBugGraf.bug.bodyChunks[1].pos, timeStacker) - camPos);
+                float rot = sLeaser.sprites[eggBugGraf.HeadSprite].rotation;
+                labels[0].rotation = ((rot < 0f ? rot + 180f * (Mathf.FloorToInt(rot) / 180 + 1) : rot) % 180f) + 90f;
+
+                // Eggs
+                for (int i = 0; i < 6; i++)
+                {
+                    var eggSprite = sLeaser.sprites[eggBugGraf.BackEggSprite(i % 2, i / 2, 2)];
+                    labels[i + 1].x = eggSprite.x;
+                    labels[i + 1].y = eggSprite.y;
+                    labels[i + 1].rotation = eggSprite.rotation;
+                    if (eggBugGraf.bug.FireBug && i >= eggBugGraf.bug.eggsLeft) labels[i + 1].isVisible = false;
+                }
+            }
+            else if (Options.Eggbugs.Value && sLeaser.drawableObject is EggBugEgg egg)
+            {
+                labels[0].SetPosition(Vector2.Lerp(egg.firstChunk.lastPos, egg.firstChunk.pos, timeStacker) - camPos);
+                labels[0].color = egg.blink > 1 && UnityEngine.Random.value > 0.5f ? egg.blinkColor : egg.color;
+            }
+            else if (Options.Eggbugs.Value && sLeaser.drawableObject is FireEgg fireEgg)
+            {
+                labels[0].SetPosition(Vector2.Lerp(fireEgg.firstChunk.lastPos, fireEgg.firstChunk.pos, timeStacker) - camPos);
+                labels[0].scale = fireEgg.firstChunk.rad * 3f / LabelTest.GetWidth(labels[0].text);
+                labels[0].color = sLeaser.sprites[1].color;
             }
         }
         private static void SpriteLeaser_CleanSpritesAndRemove(On.RoomCamera.SpriteLeaser.orig_CleanSpritesAndRemove orig, SpriteLeaser self)

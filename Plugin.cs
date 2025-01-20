@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
@@ -109,6 +110,10 @@ namespace SpiderMod
             else if (Options.Eggbugs.Value && self.drawableObject is FireEgg fireEgg)
             {
                 return [new FLabel(font, "Egg") { scale = fireEgg.firstChunk.rad * 3f / LabelTest.GetWidth("Egg"), color = fireEgg.eggColors[1] }];
+            }
+            else if (Options.Dropwigs.Value && self.drawableObject is DropBugGraphics dropBugGraf)
+            {
+                return [new FLabel(font, "Dropwig") { scale = dropBugGraf.bug.mainBodyChunk.rad * 3f / 20f }];
             }
             return null;
         });
@@ -331,6 +336,13 @@ namespace SpiderMod
                 labels[0].SetPosition(Vector2.Lerp(fireEgg.firstChunk.lastPos, fireEgg.firstChunk.pos, timeStacker) - camPos);
                 labels[0].scale = fireEgg.firstChunk.rad * 3f / LabelTest.GetWidth(labels[0].text);
                 labels[0].color = sLeaser.sprites[1].color;
+            }
+            else if (Options.Dropwigs.Value && sLeaser.drawableObject is DropBugGraphics dropBugGraf)
+            {
+                labels[0].SetPosition(Vector2.Lerp(dropBugGraf.bug.bodyChunks[1].lastPos, dropBugGraf.bug.bodyChunks[1].pos, timeStacker) - camPos);
+                float rot = sLeaser.sprites[dropBugGraf.HeadSprite].rotation;
+                labels[0].rotation = ((rot < 0f ? rot + 180f * (Mathf.FloorToInt(rot) / 180 + 1) : rot) % 180f) + 90f;
+                labels[0].color = dropBugGraf.currSkinColor;
             }
         }
         private static void SpriteLeaser_CleanSpritesAndRemove(On.RoomCamera.SpriteLeaser.orig_CleanSpritesAndRemove orig, SpriteLeaser self)

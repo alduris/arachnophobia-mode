@@ -14,12 +14,14 @@ namespace SpiderMod
             Spiders = config.Bind<bool>("Arachno_Spiders", true, new ConfigurableInfo("Whether or not spiders are transformed"));
             RotCysts = config.Bind<bool>("Arachno_Rot", false, new ConfigurableInfo("Whether or not DLLs are transformed"));
             Noots = config.Bind<bool>("Arachno_Noots", false, new ConfigurableInfo("Whether or not noots are transformed"));
+            SpidersFull = config.Bind<bool>("Arachno_SpiderFull", false, new ConfigurableInfo("Whether or not spiders are transformed"));
         }
 
         // private UIelement[] UIArrPlayerOptions;
-        public readonly Configurable<bool> Spiders;
-        public readonly Configurable<bool> RotCysts;
-        public readonly Configurable<bool> Noots;
+        public static Configurable<bool> Spiders;
+        public static Configurable<bool> RotCysts;
+        public static Configurable<bool> Noots;
+        public static Configurable<bool> SpidersFull;
 
         public override void Initialize()
         {
@@ -37,7 +39,9 @@ namespace SpiderMod
                 new OpCheckBox(RotCysts, new(10f, 500f)),
                 new OpLabel(40f, 500f, "Rot cysts"),
                 new OpCheckBox(Noots, new(10f, 470f)),
-                new OpLabel(40f, 470f, "Noodleflies")
+                new OpLabel(40f, 470f, "Noodleflies"),
+                new OpCheckBox(SpidersFull, new(10f, 440f)),
+                new OpLabel(40f, 440f, "Show full \"Spider\" text on Coalescipedes")
             );
         }
     }

@@ -30,18 +30,19 @@ namespace SpiderMod
         public static FLabel[] GetLabel(this SpriteLeaser spider) => sleaserCWT.GetValue(spider, self => {
             var font = Custom.GetFont();
 
-            if (Plugin.options.Spiders.Value && self.drawableObject is SpiderGraphics)
+            if (Options.Spiders.Value && self.drawableObject is SpiderGraphics)
             {
-                return [new(font, "Spider")];
+                string t = Options.SpidersFull.Value ? "Spider" : "S";
+                return [new(font, t)];
             }
-            else if (Plugin.options.Spiders.Value && self.drawableObject is BigSpiderGraphics bug)
+            else if (Options.Spiders.Value && self.drawableObject is BigSpiderGraphics bug)
             {
                 string s = "Big Spider";
                 if (bug.Spitter) s = $"Spitter{Environment.NewLine}Spider";
                 else if (bug.Mother) s = $"Mother{Environment.NewLine}Spider";
                 return [new(font, s)];
             }
-            else if (Plugin.options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
+            else if (Options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
             {
                 var type = daddyGraf.daddy.abstractCreature.creatureTemplate.type;
                 int cut = type.value.IndexOf("LongLegs");
@@ -66,7 +67,7 @@ namespace SpiderMod
                 }
                 return [.. list];
             }
-            else if (Plugin.options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
+            else if (Options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
             {
                 var type = nootGraf.worm.abstractCreature.creatureTemplate.type;
                 int cut = type.value.IndexOf("Needle");
@@ -80,7 +81,7 @@ namespace SpiderMod
         });
     }
 
-    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.4")]
+    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.5")]
     internal class Plugin : BaseUnityPlugin
     {
         public static new ManualLogSource Logger;
@@ -142,15 +143,15 @@ namespace SpiderMod
             orig(self, obj, rCam);
             var labels = CWTs.GetLabel(self);
 
-            if (options.Spiders.Value && self.drawableObject is SpiderGraphics spiderGraf)
+            if (Options.Spiders.Value && self.drawableObject is SpiderGraphics spiderGraf)
             {
                 // Coalescipede
-                labels[0].scale = spiderGraf.spider.firstChunk.rad * 4f / LabelTest.GetWidth("Spider", false);
+                labels[0].scale = spiderGraf.spider.firstChunk.rad * 4f / LabelTest.GetWidth(labels[0].text, false);
                 labels[0].color = rCam.currentPalette.blackColor;
 
                 self.sprites[0].container.AddChild(labels[0]);
             }
-            else if (options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
+            else if (Options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
             {
                 // Big spider
                 labels[0].scale = (bigSpidGraf.bug.bodyChunks[0].rad + bigSpidGraf.bug.bodyChunks[1].rad + bigSpidGraf.bug.bodyChunkConnections[0].distance) * 1.5f / LabelTest.GetWidth(labels[0].text, false);
@@ -159,7 +160,7 @@ namespace SpiderMod
 
                 self.sprites[0].container.AddChild(labels[0]);
             }
-            else if (options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
+            else if (Options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
             {
                 // Main body chunk
                 labels[0].scale = Mathf.Sqrt(daddyGraf.daddy.bodyChunks.Length) * daddyGraf.daddy.bodyChunks.Average(c => c.rad) * 2f / 20f;
@@ -185,7 +186,7 @@ namespace SpiderMod
                     self.sprites[0].container.AddChild(label);
                 }
             }
-            else if (options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
+            else if (Options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
             {
                 for (int i = 0; i < labels.Length; i++)
                 {
@@ -211,7 +212,7 @@ namespace SpiderMod
                 }
             }
 
-            if (options.Spiders.Value && self.drawableObject is SpiderGraphics spiderGraf)
+            if (Options.Spiders.Value && self.drawableObject is SpiderGraphics spiderGraf)
             {
                 // Coalescipede
                 var pos = self.sprites[spiderGraf.BodySprite].GetPosition();
@@ -220,7 +221,7 @@ namespace SpiderMod
                 labels[0].SetPosition(pos);
                 labels[0].rotation = rot;
             }
-            else if (options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
+            else if (Options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
             {
                 // Big spider
                 var pos = bigSpidGraf.bug.bodyChunks[1].pos - camPos;
@@ -234,7 +235,7 @@ namespace SpiderMod
                 labels[0].SetPosition(pos);
                 labels[0].rotation = rot;
             }
-            else if (options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
+            else if (Options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
             {
                 // Main body chunk
                 labels[0].SetPosition(daddyGraf.daddy.MiddleOfBody - camPos);
@@ -259,7 +260,7 @@ namespace SpiderMod
                     }
                 }
             }
-            else if (options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
+            else if (Options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
             {
                 for (int i = 0; i < labels.Length; i++)
                 {

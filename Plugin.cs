@@ -119,7 +119,7 @@ namespace SpiderMod
         });
     }
 
-    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.5")]
+    [BepInPlugin("alduris.arachnophobia", "Arachnophobia Mode", "1.0.6")]
     internal class Plugin : BaseUnityPlugin
     {
         public static new ManualLogSource Logger;
@@ -186,8 +186,6 @@ namespace SpiderMod
                 // Coalescipede
                 labels[0].scale = spiderGraf.spider.firstChunk.rad * 4f / LabelTest.GetWidth(labels[0].text, false);
                 labels[0].color = rCam.currentPalette.blackColor;
-
-                self.sprites[0].container.AddChild(labels[0]);
             }
             else if (Options.Spiders.Value && self.drawableObject is BigSpiderGraphics bigSpidGraf)
             {
@@ -195,8 +193,6 @@ namespace SpiderMod
                 labels[0].scale = (bigSpidGraf.bug.bodyChunks[0].rad + bigSpidGraf.bug.bodyChunks[1].rad + bigSpidGraf.bug.bodyChunkConnections[0].distance) * 1.5f / LabelTest.GetWidth(labels[0].text, false);
                 if (!bigSpidGraf.bug.mother && !bigSpidGraf.bug.spitter) labels[0].scale *= 4f/3f;
                 labels[0].color = bigSpidGraf.yellowCol;
-
-                self.sprites[0].container.AddChild(labels[0]);
             }
             else if (Options.RotCysts.Value && self.drawableObject is DaddyGraphics daddyGraf)
             {
@@ -218,11 +214,6 @@ namespace SpiderMod
                         labels[k].color = Color.Lerp(daddyGraf.blackColor, daddyGraf.daddy.eyeColor, Custom.LerpMap(j, 0, length, 0f, 1f, 1.5f));
                     }
                 }
-
-                foreach (var label in labels)
-                {
-                    self.sprites[0].container.AddChild(label);
-                }
             }
             else if (Options.Noots.Value && self.drawableObject is NeedleWormGraphics nootGraf)
             {
@@ -230,7 +221,10 @@ namespace SpiderMod
                 {
                     labels[i].scale = nootGraf.worm.OnBodyRad(0) * 8f / 20f;
                 }
+            }
 
+            if (labels != null)
+            {
                 foreach (var label in labels)
                 {
                     self.sprites[0].container.AddChild(label);

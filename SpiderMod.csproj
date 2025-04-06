@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <LangVersion>13</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>./output/plugins</OutputPath>
+    <OutputPath>./output/newest/plugins</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,7 +23,7 @@
     
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <ItemGroup>
-      <RemovePlugins Include="./output/plugins/*.pdb" />
+      <RemovePlugins Include="./output/newest/plugins/*.pdb" />
     </ItemGroup>
         
     <Delete Files="@(RemovePlugins)" />

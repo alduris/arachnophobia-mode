@@ -48,7 +48,7 @@ namespace SpiderMod
                 new OpCheckBox(Noots, new(10f, 440f)),
                 new OpLabel(40f, 440f, "Noodleflies"),
                 new OpCheckBox(Eggbugs, new(10f, 410f)),
-                new OpLabel(40f, 410f, "Eggbugs/Firebugs"),
+                new OpLabel(40f, 410f, ModManager.MSC ? "Eggbugs/Firebugs" : "Eggbugs"),
                 new OpCheckBox(Dropwigs, new(10f, 380f)),
                 new OpLabel(40f, 380f, "Dropwigs")
             );

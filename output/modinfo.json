@@ -4,7 +4,7 @@
     "version": "1.0.6",
     "authors": "Alduris",
     "description": "A silly little way to help deal with arachnophobia. Inspired by Lethal Company.",
-    "tags": ["Accessibility", "Creatures"],
+    "tags": ["Accessibility", "Creatures", "Base", "Downpour", "Watcher"],
     "requirements": [],
     "requirements_names": [],
     "checksum_override_version": true

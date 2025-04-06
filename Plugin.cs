@@ -51,7 +51,7 @@ namespace SpiderMod
                 if (ModManager.MSC)
                 {
                     if (type == MoreSlugcatsEnums.CreatureTemplateType.HunterDaddy) shortname = "Hunter";
-                    else if (type == MoreSlugcatsEnums.CreatureTemplateType.TerrorLongLegs) shortname = $"Your{Environment.NewLine}Mother";
+                    else if (type == DLCSharedEnums.CreatureTemplateType.TerrorLongLegs) shortname = $"Your{Environment.NewLine}Mother";
                 }
                 List<FLabel> list = [new(font, shortname)];
 

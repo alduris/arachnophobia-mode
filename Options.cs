@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using Menu.Remix.MixedUI;
+using UnityEngine;
 
 namespace SpiderMod
 {
@@ -16,8 +17,11 @@ namespace SpiderMod
             Noots = config.Bind<bool>("Arachno_Noots", false, new ConfigurableInfo("Whether or not noots are transformed"));
             Eggbugs = config.Bind<bool>("Arachno_Eggbugs", true, new ConfigurableInfo("Whether or not eggbugs and firebugs are transformed"));
             Dropwigs = config.Bind<bool>("Arachno_Dropwigs", true, new ConfigurableInfo("Whether or not dropwigs are transformed"));
+            Centipedes = config.Bind<bool>("Arachno_Centis", true, new ConfigurableInfo("Whether or not centipedes are transformed"));
+            Crabs = config.Bind<bool>("Arachno_Crabs", true, new ConfigurableInfo("Whether or not crabs are transformed"));
+            Barnacles = config.Bind<bool>("Arachno_Barnacles", true, new ConfigurableInfo("Whether or not barnacles are transformed"));
 
-            SpidersFull = config.Bind<bool>("Arachno_SpiderFull", false, new ConfigurableInfo("Whether or not spiders are transformed"));
+            SpidersFull = config.Bind<bool>("Arachno_SpiderFull", false, new ConfigurableInfo("Whether or not Coalescipedes use the full \"Spider\" text"));
         }
 
         // private UIelement[] UIArrPlayerOptions;
@@ -27,6 +31,9 @@ namespace SpiderMod
         public static Configurable<bool> Noots;
         public static Configurable<bool> Eggbugs;
         public static Configurable<bool> Dropwigs;
+        public static Configurable<bool> Centipedes;
+        public static Configurable<bool> Crabs;
+        public static Configurable<bool> Barnacles;
 
         public override void Initialize()
         {
@@ -37,21 +44,32 @@ namespace SpiderMod
             Tabs = [opTab];
 
             // Add stuff to tab
-            opTab.AddItems(
-                new OpLabel(10f, 560f, "OPTIONS", true),
-                new OpCheckBox(Spiders, new(10f, 530f)),
-                new OpLabel(40f, 530f, "Spiders"),
-                new OpCheckBox(SpidersFull, new(10f, 500f)),
-                new OpLabel(40f, 500f, "Coalescipede full \"Spider\" text"),
-                new OpCheckBox(RotCysts, new(10f, 470f)),
-                new OpLabel(40f, 470f, "Rot cysts"),
-                new OpCheckBox(Noots, new(10f, 440f)),
-                new OpLabel(40f, 440f, "Noodleflies"),
-                new OpCheckBox(Eggbugs, new(10f, 410f)),
-                new OpLabel(40f, 410f, ModManager.MSC ? "Eggbugs/Firebugs" : "Eggbugs"),
-                new OpCheckBox(Dropwigs, new(10f, 380f)),
-                new OpLabel(40f, 380f, "Dropwigs")
-            );
+            opTab.AddItems(new OpLabel(10f, 560f, "OPTIONS", true));
+
+            float y = 530f;
+            AddCheckbox(Spiders, "Spiders", ref y);
+            AddCheckbox(SpidersFull, "Coalescipede full \"Spider\" text", ref y);
+            AddCheckbox(RotCysts, "Rot long legs", ref y);
+            AddCheckbox(Noots, "Noodleflies", ref y);
+            AddCheckbox(Eggbugs, ModManager.MSC ? "Eggbugs/Firebugs" : "Eggbugs", ref y);
+            AddCheckbox(Dropwigs, "Dropwigs", ref y);
+            AddCheckbox(Centipedes, "Centipedes", ref y);
+            if (ModManager.Watcher)
+            {
+                AddCheckbox(Crabs, "Drill Crabs", ref y);
+                AddCheckbox(Barnacles, "Barnacles", ref y);
+            }
+
+            void AddCheckbox(Configurable<bool> config, string displayText, ref float y)
+            {
+                var cb = new OpCheckBox(config, new Vector2(10f, y));
+                var label = new OpLabel(40f, y, displayText)
+                {
+                    bumpBehav = cb.bumpBehav
+                };
+                opTab.AddItems(cb, label);
+                y -= 30f;
+            }
         }
     }
 }
